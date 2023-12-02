@@ -15,29 +15,31 @@ export const NUMBER_TO_NUMBER_MAP = {
 
 export async function day1b(dataPath?: string) {
   const data = await readData(dataPath);
-  const regExpLetterCheck = /[a-z]/g;
   const regExpNumberStringCheck =
-    /(?:one|two|three|four|five|six|seven|eight|nine)/g;
+    /^(one|two|three|four|five|six|seven|eight|nine)/i;
   let total = 0;
   data.forEach((d, idx) => {
     if (!d) return;
-    // replacing number string w/ numbers, letters w/ blanks
-    const numArray = d
-      // replacing number strings 'two' w/ numbers '2'
-      .replace(
-        regExpNumberStringCheck,
-        (match) => NUMBER_TO_NUMBER_MAP[match] ?? ''
-      )
-      // replacing remaining letters w/ blanks
-      .replace(regExpLetterCheck, '')
-      // get array of number
-      .split('');
+    const dataStringAsArray = d.split('');
+    const numArray: string[] = [];
+    for (let index = 0; index < dataStringAsArray.length; index++) {
+      if (!isNaN(+dataStringAsArray[index])) {
+        // it's a number add to numArray and continue
+        numArray.push(dataStringAsArray[index]);
+        continue;
+      }
+      // check for number string match at beginning of substring
+      const match = d.substring(index).match(regExpNumberStringCheck);
+      if (match) {
+        // match word is in the first capturing group
+        const matchedWord = match[1];
+        numArray.push(NUMBER_TO_NUMBER_MAP[matchedWord]);
+      }
+    }
     const firstNum = numArray[0];
     // going -2 b/c of /r that is at the end of the strings...
     const lastNum = numArray[numArray.length - 2];
-    // console.log(numArray, firstNum + lastNum);
     // coerce string to number and add to total
-    console.log(idx, numArray);
     total += +`${firstNum + lastNum}`;
   });
   return total;
