@@ -1,6 +1,5 @@
-import { readData } from '../../shared.ts';
+import { ONE_OR_MORE_SPACES, readData } from '../../shared.ts';
 import chalk from 'chalk';
-import { ONE_OR_MORE_SPACES } from './day-4.interface.ts';
 
 export type ScratchcardCounts = {
   [card: number]: number;
